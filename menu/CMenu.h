@@ -16,7 +16,7 @@ namespace XXX {
         size_t getCount() const;
         CMenuItem *getItems();
         void print();
-        int runCommand();
+        bool runCommand();
         
         CMenu(string, CMenuItem *, size_t);
         

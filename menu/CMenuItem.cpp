@@ -12,7 +12,7 @@ namespace XXX {
         std::cout << item_name;
     }
 
-    int CMenuItem::run() {
+    bool CMenuItem::run() {
         return func();
     }
 }

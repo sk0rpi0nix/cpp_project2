@@ -13,7 +13,7 @@ namespace XXX {
         string item_name{};
         string getName();
         void print();
-        int run();
+        bool run();
         
         CMenuItem(std::string, Func);
     };
