@@ -1,4 +1,4 @@
-
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include "menu/CMenu.h"
@@ -7,91 +7,102 @@
 #include "models/headers/Admin.h"
 #include "models/headers/Storage.h"
 #include "models/headers/Message.h"
+#include "models/headers/LoginMenu.h"
 
 
-
-using namespace XXX;
-using namespace human;
 
 int idBuf = 0;
 
-int createUser() {
-    int id;
-    string name;
+namespace XXX {
+    int createUser() {
+        int id;
+        string name;
 
-    cout << "Enter id: ";
-    cin >> id;
+        cout << "Enter id: ";
+        cin >> id;
 
-    cout << "Enter name: ";
-    cin >> name;
+        cout << "Enter name: ";
+        cin >> name;
 
-    User u;
-    u.setInfo(id, name);
+        User u;
+        u.setInfo(id, name);
 
-    users.push_back(u);
+        users.push_back(u);
 
-    return 1;
-}
-int printUsers() {
-    for (User &u : users) {
-        u.printInfo();
+        return 1;
     }
-    return 1;
-}
-int addMsg() {
-    int id, userId;
-    string text;
 
-    cout << "Message id: ";
-    cin >> id;
-
-    cout << "User id: ";
-    cin >> userId;
-
-    cout << "Text: ";
-    cin >> text;
-
-    Message msg = Message{id, userId,text};
-
-    sessionMessages.push_back(msg);
-
-    return 1;
-}
-int printMsgs() {
-    for (Message &m : sessionMessages) {
-        m.printMessage();
+    int sortUserByName() {
+        std::sort(users.begin(), users.end());
+        return 1;
     }
-    return 1;
+
+    int printUsers() {
+        for (User &u : users) {
+            cout << u << "\n";
+        };
+        return 1;
+    }
+    int addMsg() {
+        int id, userId;
+        string text;
+
+        cout << "Message id: ";
+        cin >> id;
+
+        cout << "User id: ";
+        cin >> userId;
+
+        cout << "Text: ";
+        cin >> text;
+
+        Message msg = Message{id, userId,text};
+
+        sessionMessages.push_back(msg);
+
+        return 1;
+    }
+    int printMsgs() {
+        for (Message &m : sessionMessages) {
+            cout << m;
+        }
+        return 1;
+    }
+    int addAdmin() {
+        int id;
+        string name;
+
+        cout << "Enter id: ";
+        cin >> id;
+
+        cout << "Enter name: ";
+        cin >> name;
+
+        User u;
+        u.setInfo(id, name);
+
+        users.push_back(u);
+
+        return 1;
+    }
+
+    const int ITEMS_NUMBER = 6;
+
 }
-int addAdmin() {
-    int id;
-    string name;
 
-    cout << "Enter id: ";
-    cin >> id;
-
-    cout << "Enter name: ";
-    cin >> name;
-
-    User u;
-    u.setInfo(id, name);
-
-    users.push_back(u);
-
-    return 1;
-}
-
-const int ITEMS_NUMBER = 5;
+using namespace XXX;
 
 int main() {
     CMenuItem items[ITEMS_NUMBER] {
-        CMenuItem{"add user", createUser},
         CMenuItem{"print all users", printUsers},
+        CMenuItem{"sort users by name", sortUserByName},
+        CMenuItem{"add user", createUser},
         CMenuItem{"add message", addMsg},
         CMenuItem{"print messages", printMsgs},
         CMenuItem{"add admin", addAdmin},
     };
-    CMenu menu("My console menu", items, ITEMS_NUMBER);
-    while (menu.runCommand()) {};
+    CMenu mainMenu("My console menu", items, ITEMS_NUMBER);
+    LoginMenu loginMenu(&mainMenu);
+    while (loginMenu.start()) {};
     return 0;
 }

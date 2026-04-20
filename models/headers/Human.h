@@ -3,10 +3,10 @@
 
 #include <string>
 
-namespace human {
+namespace XXX {
 
 
-    class Human {
+    class Human { //
     protected:
         int id;
         std::string name;
@@ -14,6 +14,7 @@ namespace human {
     public:
         virtual void setInfo(int id, std::string name) = 0;
         virtual void printInfo() = 0;
+     
     };
 }
 

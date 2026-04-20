@@ -2,14 +2,16 @@
 #define STORAGE_H
 
 #include <vector>
+#include <map>
 #include "headers/User.h"
 #include "headers/Admin.h"
 #include "headers/Message.h"
 
-namespace human {
-    std::vector<User> users;
-    std::vector<Admin> admins;
-    std::vector<Message> sessionMessages;
+namespace XXX {
+    extern std::vector<User> users;
+    extern std::vector<Admin> admins;
+    extern std::vector<Message> sessionMessages;
+    extern std::map<std::string, std::string> usersCreds;
 
 }
 

@@ -35,7 +35,7 @@ namespace XXX {
         std::cout << "0. exit" << std::endl;
     }
 
-    bool CMenu::runCommand() {
+    bool CMenu::runCommandLine() {
         print();
         std::cout << "\n   Select >> ";
         std::cin >> select;

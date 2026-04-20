@@ -5,11 +5,11 @@
 #include <iostream>
 #include "headers/Human.h"
 
-namespace human {
+namespace XXX {
     class Admin : public Human {
     public:
         void setInfo(int id, std::string name);
-
+        friend std::ostream& operator<<(std::ostream& out, XXX::Admin admin);
         void printInfo();
     };
 }

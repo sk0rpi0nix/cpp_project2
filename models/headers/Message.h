@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace human {
+namespace XXX {
 
 
 class Message {
@@ -16,6 +16,11 @@ class Message {
         Message(int id, int userId, std::string text);
 
         void printMessage();
+
+        void printMessage() const;
+
+        // Дружественная функция для вывода (по заданию перегрузка ввода не нужна)
+        friend std::ostream& operator<<(std::ostream& os, const Message& msg);
     };
 
 }
