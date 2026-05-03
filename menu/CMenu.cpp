@@ -37,7 +37,7 @@ namespace XXX {
 
     bool CMenu::runCommandLine() {
         print();
-        std::cout << "\n   Select >> ";
+        std::cout << "\n>> ";
         std::cin >> select;
         if (select == 0) {
             return 0;

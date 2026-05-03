@@ -15,25 +15,24 @@ int idBuf = 0;
 
 namespace XXX {
     int createUser() {
-        int id;
         string name;
-
-        cout << "Enter id: ";
-        cin >> id;
 
         cout << "Enter name: ";
         cin >> name;
 
         User u;
-        u.setInfo(id, name);
-
+        u.setInfo(idBuf, name);
+        idBuf++;
         users.push_back(u);
 
+        cout << endl;
         return 1;
     }
 
     int sortUserByName() {
-        std::sort(users.begin(), users.end());
+        std::sort(users.begin(), users.end(), [](const User& a, const User& b) {
+            return a < b;
+        });
         return 1;
     }
 

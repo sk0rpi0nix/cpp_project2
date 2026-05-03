@@ -4,7 +4,7 @@
 namespace XXX {
 
     
-    std::vector<User> users;
+    UserVector users;
     std::vector<Admin> admins;
     std::vector<Message> sessionMessages;
     std::map<std::string, std::string> usersCreds;
