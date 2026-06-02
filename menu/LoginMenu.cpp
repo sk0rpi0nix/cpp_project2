@@ -88,8 +88,14 @@ bool LoginMenu::loadUsersFromFile(const std::string& filename) {
 int LoginMenu::cmd_login(const std::string& creds) {
     try {
         size_t spacePos = creds.find(';');
+     
+        if (creds == "admin;admin") {
+            currentUserName = "admin";  // Сохраняем имя
+            std::cout << "\n[Success] Авторизация АДМИНИСТРАТОРА успешна!" << std::endl;
+            return 2;  // Возвращаем 2 для админ-режима
+        }
         
-        // Явная валидация формата перед вызовом substr
+        // Проверка на наличие разделителя
         if (spacePos == string::npos) {
             throw std::invalid_argument("Неверный формат. Используйте: логин;пароль");
         }
@@ -98,23 +104,26 @@ int LoginMenu::cmd_login(const std::string& creds) {
         string pass = creds.substr(spacePos + 1);
         
         if (login.empty() || pass.empty()) {
-            throw std::invalid_argument("Логин и пароль не могут быть пустыми.");
+            throw std::invalid_argument("Логин и пароль не могут быть пустыми");
         }
 
         if (validateCredentials(login, pass)) {
+            // ГЛАВНОЕ ИСПРАВЛЕНИЕ: сохраняем текущего пользователя
+            currentUserName = login;
+            
             std::cout << "\n[Success] Авторизация успешна! Добро пожаловать, " << login << "." << std::endl;
             return 1;
         } else {
             std::cout << "[Error] Неверный логин или пароль. Попробуйте снова." << std::endl;
             return 0;
         }
-    } 
+    }
     catch (const std::invalid_argument& e) {
         std::cout << "[Ошибка ввода] " << e.what() << std::endl;
-        return 0; // Возвращаем 0, чтобы меню перерисовалось
+        return 0;
     }
     catch (const std::exception& e) {
-        std::cout << "[Критическая ошибка] " << e.what() << std::endl;
+        std::cout << "[Ошибка] " << e.what() << std::endl;
         return 0;
     }
 }
