@@ -2,15 +2,34 @@
 #include <iostream>
 #include "headers/User.h"
 #include "headers/Human.h"
+#include <stdexcept>
 
 namespace XXX {
     void User::setInfo(int id, std::string name) {
+        // 1. Проверка на логическую недопустимость значений
+        if (id < 0) {
+            throw std::invalid_argument("ID пользователя не может быть отрицательным.");
+        }
+        if (name.empty()) {
+            throw std::invalid_argument("Имя пользователя не может быть пустым.");
+        }
+        
         this->id = id;
         this->name = name;
     }
 
     void User::printInfo() {
         std::cout << "User ID: " << id << ", Name: " << name << std::endl;
+    }
+    // std::string User::getName() {
+    //     return this->name;
+    // }
+    std::string Human::getName() const { 
+        return name; 
+    }
+
+    int Human::getId() const { 
+        return id; 
     }
 
     

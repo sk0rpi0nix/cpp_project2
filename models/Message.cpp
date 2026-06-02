@@ -1,24 +1,11 @@
-#include<iostream>
-#include<string>
-#include"headers/Message.h"
- 
+#include "headers/Message.h"
 
 namespace XXX {
-        Message::Message(int id, int userId, std::string text) {
-            this->id = id;
-            this->userId = userId;
-            this->text = text;
-        }
-    
-        void Message::printMessage() {
-            std::cout << id << "-" << userId << ":" << text << std::endl;
-        }
+Message::Message(int id, const std::string& sender, const std::string& receiver, const std::string& text)
+    : id(id), senderName(sender), receiverName(receiver), text(text) {}
 
-
-        // Дружественная функция вывода для Message
-        std::ostream& operator<<(std::ostream& os, const Message& msg) {
-            os << "Message{id=" << msg.id << ", userId=" << msg.userId << ", text=\"" << msg.text << "\"}";
-            return os;
-        }
-
+std::ostream& operator<<(std::ostream& os, const Message& msg) {
+    os << "[" << msg.id << "] " << msg.senderName << " -> " << msg.receiverName << ": " << msg.text;
+    return os;
+}
 }

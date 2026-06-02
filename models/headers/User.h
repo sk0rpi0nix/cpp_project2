@@ -10,6 +10,8 @@ namespace XXX {
     public:
         void setInfo(int id, std::string name);
 
+        // std::string getName() const;
+        // int getId() const;
         void printInfo();
 
     friend std::ofstream& operator<<(std::ofstream& ofs, const User& user);

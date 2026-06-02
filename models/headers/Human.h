@@ -14,7 +14,9 @@ namespace XXX {
     public:
         virtual void setInfo(int id, std::string name) = 0;
         virtual void printInfo() = 0;
-     
+        std::string getName() const;
+        int getId() const;
+
     };
 }
 

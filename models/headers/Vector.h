@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstddef>
 #include <iterator>
+#include <stdexcept>
 
 namespace XXX {
 
@@ -69,6 +70,34 @@ public:
 
     Vector() : m_array(nullptr), m_size(0) {}
 
+
+    T& at(std::size_t index) {
+        if (index >= m_size) {
+            throw std::out_of_range("Ошибка: индекс выходит за границы вектора.");
+        }
+        return m_array[index];
+    }
+
+    const T& at(std::size_t index) const {
+        if (index >= m_size) {
+            throw std::out_of_range("Ошибка: индекс выходит за границы вектора.");
+        }
+        return m_array[index];
+    }
+
+
+
+    T& operator[](std::size_t index) {
+        return m_array[index];
+    }
+    
+    const T& operator[](std::size_t index) const {
+        return m_array[index];
+    }
+
+    // ... (остальные методы)
+    
+    
     explicit Vector(std::size_t size) : m_size(size) {
         m_array = (size > 0) ? new T[size] : nullptr;
     }
