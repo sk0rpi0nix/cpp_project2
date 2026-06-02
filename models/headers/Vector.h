@@ -1,81 +1,150 @@
-#ifndef USER_VECTOR
-#define USER_VECTOR
+#ifndef VECTOR_H
+#define VECTOR_H
 
-#include "User.h"
 #include <iostream>
 #include <cstddef>
 #include <iterator>
 
 namespace XXX {
-    class VectorIterator {
-        friend class UserVector;
-    public:
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = User;
-        using difference_type = std::ptrdiff_t;
-        using pointer = User*;
-        using reference = User&;
 
-        VectorIterator();
-        VectorIterator(const VectorIterator& _it);
-        
-        bool operator==(const VectorIterator& _it) const;
-        bool operator!=(const VectorIterator& _it) const;
-        bool operator<(const VectorIterator& _it) const;
-        bool operator>(const VectorIterator& _it) const;
-        bool operator<=(const VectorIterator& _it) const;
-        bool operator>=(const VectorIterator& _it) const;
+// Предварительное объявление для корректной работы friend
+template <typename T> class Vector;
 
-        std::ptrdiff_t operator-(const VectorIterator& other) const;
-        User& operator[](std::ptrdiff_t n) const;
-        
-        VectorIterator& operator+=(std::ptrdiff_t n);
-        VectorIterator& operator-=(std::ptrdiff_t n);
-        VectorIterator operator+(std::ptrdiff_t n) const;
-        VectorIterator operator-(std::ptrdiff_t n) const;
+template <typename T>
+class VectorIterator {
+    // Разрешаем Vector<T> доступ к приватным полям итератора
+    template <typename> friend class Vector;
+public:
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type = T;
+    using difference_type = std::ptrdiff_t;
+    using pointer = T*;
+    using reference = T&;
 
-        VectorIterator& operator++();
-        VectorIterator operator++(int);
-        VectorIterator& operator--();
-        VectorIterator operator--(int);
-        
-        User& operator*() const;
-        User* operator->() const;
+    VectorIterator() : m_ptr(nullptr) {}
+    VectorIterator(const VectorIterator& other) : m_ptr(other.m_ptr) {}
+    explicit VectorIterator(T* p) : m_ptr(p) {}
 
-    private:
-        User* m_user;
-        explicit VectorIterator(User* _p);
-    };
+    // Сравнение
+    bool operator==(const VectorIterator& other) const { return m_ptr == other.m_ptr; }
+    bool operator!=(const VectorIterator& other) const { return m_ptr != other.m_ptr; }
+    bool operator< (const VectorIterator& other) const { return m_ptr <  other.m_ptr; }
+    bool operator> (const VectorIterator& other) const { return m_ptr >  other.m_ptr; }
+    bool operator<=(const VectorIterator& other) const { return m_ptr <= other.m_ptr; }
+    bool operator>=(const VectorIterator& other) const { return m_ptr >= other.m_ptr; }
 
-    VectorIterator operator+(std::ptrdiff_t n, const VectorIterator& it);
+    // Арифметика и индексация
+    difference_type operator-(const VectorIterator& other) const { return m_ptr - other.m_ptr; }
+    reference operator[](difference_type n) const { return *(m_ptr + n); }
+    VectorIterator& operator+=(difference_type n) { m_ptr += n; return *this; }
+    VectorIterator& operator-=(difference_type n) { m_ptr -= n; return *this; }
+    VectorIterator operator+(difference_type n) const { return VectorIterator(m_ptr + n); }
+    VectorIterator operator-(difference_type n) const { return VectorIterator(m_ptr - n); }
 
-    class UserVector {
-    public:
-        typedef VectorIterator iterator;
-        typedef VectorIterator const_iterator;
+    // Инкремент/Декремент
+    VectorIterator& operator++()    { ++m_ptr; return *this; }
+    VectorIterator  operator++(int) { VectorIterator tmp = *this; ++(*this); return tmp; }
+    VectorIterator& operator--()    { --m_ptr; return *this; }
+    VectorIterator  operator--(int) { VectorIterator tmp = *this; --(*this); return tmp; }
 
-        UserVector();
-        UserVector(unsigned _size);
-        UserVector(unsigned _size, User _value);
-        ~UserVector();
+    // Разыменование
+    reference operator*()  const { return *m_ptr; }
+    pointer   operator->() const { return m_ptr; }
 
-        UserVector(const UserVector& other);
-        UserVector& operator=(const UserVector& other);
+private:
+    T* m_ptr;
+};
 
-        void push_back(const User& user);
-        size_t getSize() const;
-        
-        iterator begin();
-        iterator end();
-        const_iterator begin() const;
-        const_iterator end() const;
-
-        friend std::ostream& operator<<(std::ostream&, const UserVector&);
-
-    private:
-        User* m_array;
-        size_t m_size;
-    };
+// Не-член оператора сложения (n + it)
+template <typename T>
+VectorIterator<T> operator+(std::ptrdiff_t n, const VectorIterator<T>& it) {
+    return it + n;
 }
 
-#endif
+template <typename T>
+class Vector {
+public:
+    using iterator       = VectorIterator<T>;
+    using const_iterator = VectorIterator<T>;
+
+    Vector() : m_array(nullptr), m_size(0) {}
+
+    explicit Vector(std::size_t size) : m_size(size) {
+        m_array = (size > 0) ? new T[size] : nullptr;
+    }
+
+    Vector(std::size_t size, const T& value) : m_size(size) {
+        if (size > 0) {
+            m_array = new T[size];
+            for (std::size_t i = 0; i < size; ++i) {
+                m_array[i] = value;
+            }
+        } else {
+            m_array = nullptr;
+        }
+    }
+
+    ~Vector() { delete[] m_array; }
+
+    // Правило трёх (конструктор копирования)
+    Vector(const Vector& other) : m_size(other.m_size) {
+        if (m_size > 0) {
+            m_array = new T[m_size];
+            for (std::size_t i = 0; i < m_size; ++i) {
+                m_array[i] = other.m_array[i];
+            }
+        } else {
+            m_array = nullptr;
+        }
+    }
+
+    // Правило трёх (оператор присваивания)
+    Vector& operator=(const Vector& other) {
+        if (this != &other) {
+            delete[] m_array;
+            m_size = other.m_size;
+            if (m_size > 0) {
+                m_array = new T[m_size];
+                for (std::size_t i = 0; i < m_size; ++i) {
+                    m_array[i] = other.m_array[i];
+                }
+            } else {
+                m_array = nullptr;
+            }
+        }
+        return *this;
+    }
+
+    void push_back(const T& value) {
+        T* newArray = new T[m_size + 1];
+        for (std::size_t i = 0; i < m_size; ++i) {
+            newArray[i] = m_array[i];
+        }
+        newArray[m_size] = value;
+        delete[] m_array;
+        m_array = newArray;
+        ++m_size;
+    }
+
+    std::size_t getSize() const { return m_size; }
+
+    iterator begin()       { return iterator(m_array); }
+    iterator end()         { return iterator(m_array + m_size); }
+    const_iterator begin() const { return const_iterator(m_array); }
+    const_iterator end()   const { return const_iterator(m_array + m_size); }
+
+    friend std::ostream& operator<<(std::ostream& out, const Vector<T>& vec) {
+        for (std::size_t i = 0; i < vec.m_size; ++i) {
+            out << vec.m_array[i] << "\n";
+        }
+        return out;
+    }
+
+private:
+    T* m_array;
+    std::size_t m_size;
+};
+
+} // namespace XXX
+
+#endif // VECTOR_H

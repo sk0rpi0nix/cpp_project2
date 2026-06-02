@@ -9,7 +9,7 @@
 #include "headers/Vector.h"
 
 namespace XXX {
-    extern UserVector users;
+    extern Vector<User> users;
     extern std::vector<Admin> admins;
     extern std::vector<Message> sessionMessages;
     extern std::map<std::string, std::string> usersCreds;
